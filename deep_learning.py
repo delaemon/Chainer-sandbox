@@ -31,7 +31,7 @@ class MyNetwork(Chain):
 
   def __call__(self, x):
     h1 = F.dropout(F.relu(self.l1(x)))
-    h2 = F.dropout(F.relu(self.l2(x)))
+    h2 = F.dropout(F.relu(self.l2(h1)))
     p = self.l3(h2)
     return p
 
@@ -65,14 +65,14 @@ for epoch in range(n_epoch):
 
     loss.backward()
 
-    accuracy = model.accurach
+    accuracy = model.accuracy
 
     optimizer.update()
 
     sum_loss += float(loss.data) * batchsize
     sum_accuracy += float(accuracy.data) * batchsize
 
-  losses.append(sum_loss/N)
+  losses.append(sum_loss / N)
   print("loss: %f, accuracy: %f" % (sum_loss / N, sum_accuracy / N))
 
 training_time = time.time() - start
@@ -82,9 +82,9 @@ start = time.time()
 x_test = Variable(data_test)
 result_scores = network(x_test).data
 predict_time = time.time() - start
-result = np.argmax(result_scores, axis=1)
+results = np.argmax(result_scores, axis = 1)
 
-score = accuracy_score(label_test,results)
+score = accuracy_score(label_test, results)
 print(training_time, predict_time)
 print(score)
 cmatrix = cunfusion_matrix(label_test,results)
